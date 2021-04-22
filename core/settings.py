@@ -129,7 +129,20 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 ASGI_APPLICATION = "core.asgi.application"
+
+# Redis channel to implement grouping of channels based on channel name for websocket implementation
+# https://channels.readthedocs.io/en/latest/tutorial/part_2.html#enable-a-channel-layer
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)]
+        }
+    }
+}
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
