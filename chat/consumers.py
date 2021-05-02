@@ -43,3 +43,30 @@ class ChatConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             "message": message
         }))
+
+
+
+class NotificationConsumer(WebsocketConsumer):
+    def connect(self):
+        self.room_name = "notifications"
+        self.room_chat_name = "room_{}".format(self.room_name)
+
+        # Join group
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_chat_name,
+            self.channel_name
+        )
+
+        self.accept()
+
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_chat_name,
+            self.channel_name
+        )
+    
+    def events_alarm(self, event):
+        print(event)
+        self.send(text_data=json.dumps({
+            "message": event['content']
+        }))
